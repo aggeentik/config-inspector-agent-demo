@@ -1,0 +1,30 @@
+# config/payment-service/deployment.yaml (BEFORE)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: payments
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    spec:
+      containers:
+      - name: payment-service
+        image: shopflow/payment:v2.1.0
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi" 
+            cpu: "500m"
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka-cluster:9092"
+        - name: DB_CONNECTION_POOL
+          value: "10"
+        - name: PAYMENT_TIMEOUT_MS
+          value: "5000"
