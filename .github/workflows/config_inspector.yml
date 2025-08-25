@@ -10,6 +10,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      id-token: write
     if: github.actor != 'dependabot[bot]'
 
     steps:
@@ -38,6 +39,12 @@ jobs:
 
       - name: Setup environment
         run: ./.github/workflows/scripts/setup-env.sh
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@main
+        with:
+            role-to-assume: arn:aws:iam::322615215390:role/GitHubActionsStreetraceRole
+            aws-region: us-east-1
 
       - name: Run Config Review
         timeout-minutes: 10
