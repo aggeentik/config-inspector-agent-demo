@@ -1,0 +1,67 @@
+name: Streetrace Config Inspector
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  streetrace-config-inspector:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: streetrace-ai/streetrace
+          fetch-depth: 0
+          ref: demo/config-inspector-agent-83
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v3
+
+      - name: Setup environment
+        run: ./.github/workflows/scripts/setup-env.sh
+
+      - name: Run Code Review
+        timeout-minutes: 10
+        env:
+          AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
+          AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}
+          AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          STREETRACE_MODEL: ${{ vars.STREETRACE_MODEL || 'azure/gpt-4o' }}
+        run: |
+          poetry run streetrace \
+            --model="$STREETRACE_MODEL" \
+            --agent=config_inspector \
+            --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a PR  review and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
+            || echo "StreetRace completed with exit code $?"
+
+      - name: Format review
+        if: always()
+        run: ./.github/workflows/scripts/format-review.sh
+
+      - name: Post review comment
+        if: always() && hashFiles('formatted-review.md') != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ github.event.pull_request.number }}
+          header: streetrace-config-inspector
+          path: formatted-review.md
