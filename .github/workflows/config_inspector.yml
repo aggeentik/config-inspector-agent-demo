@@ -19,7 +19,7 @@ jobs:
         with:
           repository: streetrace-ai/config-inspector-agent-demo
           fetch-depth: 0
-          ref: demo/config-inspector-agent-83
+          ref: change/CHANGE-1-UPDATE-PAYMENT-SVC
 
       - name: Set up Python
         uses: actions/setup-python@v5
