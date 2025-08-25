@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          repository: streetrace-ai/streetrace
+          repository: streetrace-ai/config-inspector-agent-demo
           fetch-depth: 0
           ref: demo/config-inspector-agent-83
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Setup environment
         run: ./.github/workflows/scripts/setup-env.sh
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@main
         with:
@@ -55,6 +55,7 @@ jobs:
           AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           STREETRACE_MODEL: ${{ vars.STREETRACE_MODEL || 'azure/gpt-4o' }}
@@ -62,7 +63,7 @@ jobs:
           poetry run streetrace \
             --model="$STREETRACE_MODEL" \
             --agent=config_inspector \
-            --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a PR  review and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
+            --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a configuration changes analysis of PR $PR_TITLE-$PR_NUMBER and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
             || echo "StreetRace completed with exit code $?"
 
       - name: Format review
