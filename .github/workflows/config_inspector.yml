@@ -118,4 +118,3 @@ jobs:
           number: ${{ github.event.pull_request.number }}
           header: streetrace-config-inspector
           path: project/formatted-review.md
-   
