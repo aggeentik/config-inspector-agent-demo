@@ -14,12 +14,13 @@ jobs:
     if: github.actor != 'dependabot[bot]'
 
     steps:
-      - name: Checkout code
+      - name: Checkout Streetrace code
         uses: actions/checkout@v4
         with:
-          repository: streetrace-ai/config-inspector-agent-demo
+          repository: streetrace-ai/streetrace
+          path: streetrace
           fetch-depth: 0
-          ref: change/CHANGE-1-UPDATE-PAYMENT-SVC
+          ref: demo/config-inspector-agent-83
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -57,6 +58,14 @@ jobs:
             role-to-assume: arn:aws:iam::322615215390:role/GitHubActionsStreetraceRole
             aws-region: us-east-1
 
+      - name: Checkout project code
+        uses: actions/checkout@v4
+        with:
+          repository: streetrace-ai/config-inspector-agent-demo
+          path: project
+          fetch-depth: 0
+          ref: change/CHANGE-1-UPDATE-PAYMENT-SVC
+
       - name: Run Config Review
         timeout-minutes: 10
         env:
@@ -74,6 +83,7 @@ jobs:
           poetry run streetrace \
             --model="$STREETRACE_MODEL" \
             --agent=config_inspector \
+            --path="$GITHUB_WORKSPACE/project/" \
             --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a configuration changes analysis of PR $PR_TITLE-$PR_NUMBER and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
             || echo "StreetRace completed with exit code $?"
 
