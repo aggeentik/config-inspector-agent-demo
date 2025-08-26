@@ -39,6 +39,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Setup environment
+        working-directory: streetrace
         run: |
           set -euo pipefail
           echo "Installing MCP servers..."
@@ -67,6 +68,7 @@ jobs:
           ref: change/CHANGE-1-UPDATE-PAYMENT-SVC
 
       - name: Run Config Review
+        working-directory: streetrace
         timeout-minutes: 10
         env:
           AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
@@ -88,7 +90,7 @@ jobs:
             || echo "StreetRace completed with exit code $?"
 
       - name: Format review
-        if: always()
+        working-directory: project
         run: |
           if [ -f "config-review-result.md" ]; then
             {
