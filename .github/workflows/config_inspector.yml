@@ -104,9 +104,9 @@ jobs:
           fi
 
       - name: Post review comment
-        if: always() && hashFiles('formatted-review.md') != ''
+        if: always() && hashFiles('project/formatted-review.md') != ''
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           number: ${{ github.event.pull_request.number }}
           header: streetrace-config-inspector
-          path: formatted-review.md
+          path: project/formatted-review.md

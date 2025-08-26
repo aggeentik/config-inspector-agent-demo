@@ -1,0 +1,43 @@
+{
+  "id": "2025-08-26_10-42",
+  "app_name": "config-inspector-agent-demo",
+  "user_id": "aggeentik",
+  "state": {},
+  "events": [
+    {
+      "content": {
+        "parts": [],
+        "role": "user"
+      },
+      "invocation_id": "",
+      "author": "user",
+      "actions": {
+        "state_delta": {},
+        "artifact_delta": {},
+        "requested_auth_configs": {}
+      },
+      "id": "qlefS9mA",
+      "timestamp": 1756197774.164043
+    },
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "get lits of open PRs"
+          }
+        ],
+        "role": "user"
+      },
+      "invocation_id": "e-45ebf547-89df-49f7-a05f-09d3ebcee156",
+      "author": "user",
+      "actions": {
+        "state_delta": {},
+        "artifact_delta": {},
+        "requested_auth_configs": {}
+      },
+      "id": "AGQZKcqh",
+      "timestamp": 1756197774.638619
+    }
+  ],
+  "last_update_time": 1756197774.638619
+}
