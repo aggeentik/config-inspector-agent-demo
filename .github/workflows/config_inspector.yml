@@ -58,7 +58,6 @@ jobs:
         with:
             role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/GitHubActionsStreetraceRole
             aws-region: us-east-1
-            role-session-name: default
 
       - name: Checkout project code
         uses: actions/checkout@v4
@@ -75,7 +74,7 @@ jobs:
           AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
           AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}
           AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
-          AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
+          AWS_PROFILE: default
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
@@ -95,7 +94,7 @@ jobs:
         working-directory: streetrace
         run: |
           tail streetrace.log
-          
+
       - name: Format review
         working-directory: project
         run: |
