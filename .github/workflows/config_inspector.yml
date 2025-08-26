@@ -74,7 +74,6 @@ jobs:
           AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
           AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}
           AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
-          AWS_PROFILE: default
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
@@ -90,10 +89,13 @@ jobs:
             --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a configuration changes analysis of PR $PR_TITLE-$PR_NUMBER and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
             || echo "StreetRace completed with exit code $?"
       
-      - name: Tail streetrace.log
+      - name: Upload Streetrace logs to S3
+        if: always()
         working-directory: streetrace
         run: |
-          tail streetrace.log
+          if [ -f "streetrace.log" ]; then
+            aws s3 cp streetrace.log s3://streetrace-logs-bucket/pr-${{ github.event.pull_request.number }}-$(date +%Y%m%d-%H%M%S).log
+          fi
 
       - name: Format review
         working-directory: project
