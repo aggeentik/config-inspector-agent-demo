@@ -86,6 +86,7 @@ jobs:
             --model="$STREETRACE_MODEL" \
             --agent=config_inspector \
             --path="$GITHUB_WORKSPACE/project/" \
+            --verbose \
             --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a configuration changes analysis of PR $PR_TITLE-$PR_NUMBER and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
             || echo "StreetRace completed with exit code $?"
 
