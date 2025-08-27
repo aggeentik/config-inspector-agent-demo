@@ -1,0 +1,38 @@
+{
+  "incident_history": [
+    {
+      "incident_id": "INC-2023-1156",
+      "date": "2023-10-15T14:22:00Z",
+      "severity": "P1",
+      "affected_services": ["payment-service", "checkout-service"],
+      "root_cause": "Payment service timeout configuration too aggressive",
+      "config_changes": [
+        {
+          "component": "payment-service",
+          "parameter": "PAYMENT_TIMEOUT_MS", 
+          "old_value": "8000",
+          "new_value": "3000"
+        }
+      ],
+      "resolution_time": "47m",
+      "business_impact": "12% checkout failure rate for 47 minutes"
+    },
+    {
+      "incident_id": "INC-2023-0892",
+      "date": "2023-08-22T09:15:00Z", 
+      "severity": "P2",
+      "affected_services": ["payment-service", "postgres-payments-db"],
+      "root_cause": "Database connection pool exhaustion",
+      "config_changes": [
+        {
+          "component": "payment-service",
+          "parameter": "DB_CONNECTION_POOL",
+          "old_value": "15",
+          "new_value": "25"
+        }
+      ],
+      "resolution_time": "23m",
+      "business_impact": "Payment processing delays averaging 15 seconds"
+    }
+  ]
+}
