@@ -20,7 +20,7 @@ jobs:
           repository: streetrace-ai/streetrace
           path: streetrace
           fetch-depth: 0
-          ref: demo/config-inspector-agent-83
+          ref: ${{ vars.STREETRACE_REPO_REF }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,6 +37,9 @@ jobs:
     
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+
+      - name: Install yamllint
+        run: pip install yamllint
 
       - name: Setup environment
         working-directory: streetrace
@@ -59,19 +62,12 @@ jobs:
             role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/GitHubActionsStreetraceRole
             aws-region: us-east-1
       
-      - name: Setup AWS credentials for MCP
+      - name: Export AWS credentials for MCP servers
         run: |
-          mkdir -p ~/.aws
-          cat > ~/.aws/credentials << EOF
-          [default]
-          aws_access_key_id=$AWS_ACCESS_KEY_ID
-          aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
-          aws_session_token=$AWS_SESSION_TOKEN
-          EOF
-          cat > ~/.aws/config << EOF
-          [default]
-          region=us-east-1
-          EOF
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_REGION=us-east-1" >> $GITHUB_ENV
 
       - name: Checkout project code
         uses: actions/checkout@v4
