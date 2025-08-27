@@ -1,11 +1,11 @@
-# config/payment-service/deployment.yaml (BEFORE)
+# config/payment-service/deployment.yaml (AFTER - Proposed Change)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment-service
   namespace: payments
 spec:
-  replicas: 3
+  replicas: 5  # CHANGED: Scale up for Black Friday
   selector:
     matchLabels:
       app: payment-service
@@ -13,18 +13,20 @@ spec:
     spec:
       containers:
       - name: payment-service
-        image: shopflow/payment:v2.1.0
+        image: shopflow/payment:v2.2.0  # CHANGED: New version
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "200m"
+            memory: "512Mi"  # CHANGED: Increased memory
+            cpu: "300m"      # CHANGED: Increased CPU
           limits:
-            memory: "512Mi" 
-            cpu: "500m"
+            memory: "1Gi"    # CHANGED: Increased memory limit
+            cpu: "800m"      # CHANGED: Increased CPU limit
         env:
         - name: KAFKA_BROKERS
           value: "kafka-cluster:9092"
         - name: DB_CONNECTION_POOL
-          value: "10"
+          value: "20"        # CHANGED: Doubled connection pool
         - name: PAYMENT_TIMEOUT_MS
-          value: "5000"
+          value: "3000"      # CHANGED: Reduced timeout
+        - name: REDIS_CACHE_TTL  # NEW: Added caching
+          value: "300"
