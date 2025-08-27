@@ -72,10 +72,10 @@ jobs:
       - name: Checkout project code
         uses: actions/checkout@v4
         with:
-          repository: streetrace-ai/config-inspector-agent-demo
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           path: project
           fetch-depth: 0
-          ref: change/CHANGE-1-UPDATE-PAYMENT-SVC
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run Config Review
         working-directory: streetrace
@@ -96,7 +96,7 @@ jobs:
             --agent=config_inspector \
             --path="$GITHUB_WORKSPACE/project/" \
             --verbose \
-            --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a configuration changes analysis of PR $PR_TITLE-$PR_NUMBER and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
+            --prompt="CRITICAL: You MUST create the file config-review-result.md using write_file tool. This is mandatory - the workflow will fail without it. Conduct a configuration changes analysis of PR ${{ github.event.pull_request.title }}-${{ github.event.pull_request.number }} and save ALL results to this file. Verify file creation with read_file. Do not print to console." \
             || echo "StreetRace completed with exit code $?"
       
       - name: Upload Streetrace logs to S3
